@@ -11,7 +11,7 @@ public class ParameterExperiment {
 
     static final String CSV_HEADER = "run_id,dataset_version,run,m,k,n,seed,fpr_percent,"
             + "lookups_baseline,lookups_bloom,lookups_avoided,accepted,duplicates,baseline_ms,bloom_ms,"
-            + "data_sha256"; // NEW
+            + "data_sha256,lookup_delay_us,stream_duplicates,false_positives";
 
     record Config(String name, int m, int k, int n) {}
     record Result(double ms, PipelineMetrics metrics) {}
@@ -37,7 +37,7 @@ public class ParameterExperiment {
 
         System.out.println("Dataset version: " + cfg.getString("dataset.version"));
         System.out.println("MLflow tracking: " + (tracker.isEnabled() ? "enabled" : "disabled"));
-        System.out.println("Run | m | k | n | FPR% | lookups base | lookups bloom | avoided | accepted | duplicates | base ms | bloom ms");
+        System.out.println("Run | m | k | n | FPR% | lookups base | lookups bloom | avoided | FP | accepted | duplicates | base ms | bloom ms");
         for (Config c : configs) {
             runConfig(c, cfg, writer, tracker, runId);
         }
@@ -56,7 +56,7 @@ public class ParameterExperiment {
         int duplicates = (int) Math.round(c.n() * dupFraction);
         List<DataRecord> stream = Experiment.buildStream(c.n(), duplicates, seed);
 
-        // NEW: fingerprint of the input data (computed once, outside the timed sections)
+        // Fingerprint of the input data (computed once, outside the timed sections)
         String dataSha256 = DataChecksum.sha256(stream);
 
         // 1. FPR: fill the filter with the n IDs, then test genuinely new IDs
@@ -92,37 +92,41 @@ public class ParameterExperiment {
         bloomMs /= repeats;
 
         // Console output
-        System.out.printf("%s | %d | %d | %d | %.2f | %d | %d | %d | %d | %d | %.1f | %.1f%n",
+        System.out.printf("%s | %d | %d | %d | %.2f | %d | %d | %d | %d | %d | %d | %.1f | %.1f%n",
                 c.name(), c.m(), c.k(), c.n(), fpr,
                 baseM.exactChecks, bloomM.exactChecks, bloomM.exactChecksAvoided,
+                bloomM.falsePositives,
                 bloomM.acceptedRecords, bloomM.confirmedDuplicates,
                 baseMs, bloomMs);
 
         // CSV output (Locale.ROOT keeps the decimal separator as a dot)
         writer.append(String.format(Locale.ROOT,
-                "%s,%s,%s,%d,%d,%d,%d,%.2f,%d,%d,%d,%d,%d,%.1f,%.1f,%s", // NEW: extra %s
+                "%s,%s,%s,%d,%d,%d,%d,%.2f,%d,%d,%d,%d,%d,%.1f,%.1f,%s,%d,%d,%d",
                 runId, cfg.getString("dataset.version"), c.name(),
                 c.m(), c.k(), c.n(), seed, fpr,
                 baseM.exactChecks, bloomM.exactChecks, bloomM.exactChecksAvoided,
                 bloomM.acceptedRecords, bloomM.confirmedDuplicates,
                 baseMs, bloomMs,
-                dataSha256)); // NEW
+                dataSha256, delay, duplicates, bloomM.falsePositives));
 
         // MLflow output: parameters = inputs, metrics = results
+        // Map.of holds at most 10 pairs: switch to Map.ofEntries before adding another parameter
         tracker.logRun(c.name(),
                 Map.of("batch_id", runId,
                         "dataset_version", cfg.getString("dataset.version"),
-                        "data_sha256", dataSha256, // NEW
+                        "data_sha256", dataSha256,
                         "m", String.valueOf(c.m()),
                         "k", String.valueOf(c.k()),
                         "n", String.valueOf(c.n()),
                         "seed", String.valueOf(seed),
                         "repeats", String.valueOf(repeats),
-                        "lookup_delay_us", String.valueOf(delay)),
+                        "lookup_delay_us", String.valueOf(delay),
+                        "stream_duplicates", String.valueOf(duplicates)),
                 Map.of("fpr_percent", fpr,
                         "lookups_baseline", (double) baseM.exactChecks,
                         "lookups_bloom", (double) bloomM.exactChecks,
                         "lookups_avoided", (double) bloomM.exactChecksAvoided,
+                        "false_positives", (double) bloomM.falsePositives,
                         "accepted", (double) bloomM.acceptedRecords,
                         "duplicates", (double) bloomM.confirmedDuplicates,
                         "baseline_ms", baseMs,

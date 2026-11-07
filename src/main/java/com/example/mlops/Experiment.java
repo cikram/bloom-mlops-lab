@@ -23,6 +23,7 @@ public class Experiment {
         run("exact store only (baseline)", stream, false, cfg);
         run("bloom-gated", stream, true, cfg);
         measureFalsePositiveRate(cfg);
+        measureMemory(cfg);
     }
 
     static List<DataRecord> buildStream(int unique, int duplicates, long seed) {
@@ -77,5 +78,42 @@ public class Experiment {
         }
         double fpr = 100.0 * falsePositives / newCandidates;
         System.out.printf("False-positive rate: %.3f%%%n", fpr);
+    }
+
+    // Approximate heap usage in bytes, after asking the JVM to collect unreachable objects
+    static long usedMemory() {
+        for (int i = 0; i < 3; i++) {
+            System.gc();
+        }
+        Runtime rt = Runtime.getRuntime();
+        return rt.totalMemory() - rt.freeMemory();
+    }
+
+    // Memory of the exact store alone (baseline) versus the Bloom filter added on top
+    static void measureMemory(ExperimentConfig cfg) {
+        int n = cfg.getInt("data.unique");
+        int m = cfg.getInt("bloom.bits");
+        int k = cfg.getInt("bloom.hashes");
+
+        long before = usedMemory();
+        ExactIdStore store = new ExactIdStore(0);
+        for (int i = 0; i < n; i++) {
+            store.addIfAbsent("id-" + i);          // new Strings, so their size is counted
+        }
+        long afterStore = usedMemory();
+
+        DeduplicationPipeline pipeline = new DeduplicationPipeline(m, k, new ExactIdStore(0));
+        long afterFilter = usedMemory();
+
+        // keeps both objects reachable until the measurements are done
+        if (store.snapshot().size() != n || pipeline.filter() == null) {
+            throw new IllegalStateException("memory measurement failed");
+        }
+
+        double exactMb = (afterStore - before) / 1e6;
+        double filterMb = (afterFilter - afterStore) / 1e6;
+        System.out.printf("%nMemory: exact store %.2f MB | Bloom filter %.2f MB | "
+                        + "baseline = %.2f MB, with filter = %.2f MB (+%.1f%%)%n",
+                exactMb, filterMb, exactMb, exactMb + filterMb, 100.0 * filterMb / exactMb);
     }
 }
