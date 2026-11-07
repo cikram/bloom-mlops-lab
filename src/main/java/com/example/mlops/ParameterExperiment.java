@@ -10,7 +10,8 @@ import java.util.Map;
 public class ParameterExperiment {
 
     static final String CSV_HEADER = "run_id,dataset_version,run,m,k,n,seed,fpr_percent,"
-            + "lookups_baseline,lookups_bloom,lookups_avoided,accepted,duplicates,baseline_ms,bloom_ms";
+            + "lookups_baseline,lookups_bloom,lookups_avoided,accepted,duplicates,baseline_ms,bloom_ms,"
+            + "data_sha256"; // NEW
 
     record Config(String name, int m, int k, int n) {}
     record Result(double ms, PipelineMetrics metrics) {}
@@ -55,6 +56,9 @@ public class ParameterExperiment {
         int duplicates = (int) Math.round(c.n() * dupFraction);
         List<DataRecord> stream = Experiment.buildStream(c.n(), duplicates, seed);
 
+        // NEW: fingerprint of the input data (computed once, outside the timed sections)
+        String dataSha256 = DataChecksum.sha256(stream);
+
         // 1. FPR: fill the filter with the n IDs, then test genuinely new IDs
         ExactIdStore fprStore = new ExactIdStore(0);
         DeduplicationPipeline fprPipeline = new DeduplicationPipeline(c.m(), c.k(), fprStore);
@@ -96,17 +100,19 @@ public class ParameterExperiment {
 
         // CSV output (Locale.ROOT keeps the decimal separator as a dot)
         writer.append(String.format(Locale.ROOT,
-                "%s,%s,%s,%d,%d,%d,%d,%.2f,%d,%d,%d,%d,%d,%.1f,%.1f",
+                "%s,%s,%s,%d,%d,%d,%d,%.2f,%d,%d,%d,%d,%d,%.1f,%.1f,%s", // NEW: extra %s
                 runId, cfg.getString("dataset.version"), c.name(),
                 c.m(), c.k(), c.n(), seed, fpr,
                 baseM.exactChecks, bloomM.exactChecks, bloomM.exactChecksAvoided,
                 bloomM.acceptedRecords, bloomM.confirmedDuplicates,
-                baseMs, bloomMs));
+                baseMs, bloomMs,
+                dataSha256)); // NEW
 
         // MLflow output: parameters = inputs, metrics = results
         tracker.logRun(c.name(),
                 Map.of("batch_id", runId,
                         "dataset_version", cfg.getString("dataset.version"),
+                        "data_sha256", dataSha256, // NEW
                         "m", String.valueOf(c.m()),
                         "k", String.valueOf(c.k()),
                         "n", String.valueOf(c.n()),
