@@ -1,0 +1,9 @@
+record_id,expected_decision
+r001,accept
+r002,accept
+r003,accept
+r002,duplicate
+r004,accept
+r005,accept
+r001,duplicate
+r006,accept
