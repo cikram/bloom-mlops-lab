@@ -1,0 +1,7 @@
+target/
+.idea/
+.git/
+mlflow.db
+mlruns/
+mlartifacts/
+reports/
