@@ -9,14 +9,23 @@ import java.util.List;
 
 public class CsvDeduplication {
 
+    record Result(int read, int accepted, int invalid, PipelineMetrics metrics) {}
+
     public static void main(String[] args) throws IOException {
         ExperimentConfig cfg = new ExperimentConfig("experiments/experiment-config.properties");
         Path input = Path.of(cfg.getString("csv.input"));
         Path output = Path.of(cfg.getString("csv.output"));
 
-        ExactIdStore store = new ExactIdStore(0);
-        DeduplicationPipeline pipeline = new DeduplicationPipeline(
-                cfg.getInt("bloom.bits"), cfg.getInt("bloom.hashes"), store);
+        Result r = run(input, output, cfg.getInt("bloom.bits"), cfg.getInt("bloom.hashes"));
+
+        System.out.printf("Read %d records, accepted %d, duplicates %d, invalid %d%n",
+                r.read(), r.accepted(), r.read() - r.accepted(), r.invalid());
+        System.out.println("Accepted records written to " + output);
+        r.metrics().printSummary();
+    }
+
+    static Result run(Path input, Path output, int bits, int hashes) throws IOException {
+        DeduplicationPipeline pipeline = new DeduplicationPipeline(bits, hashes, new ExactIdStore(0));
 
         List<String> lines = Files.readAllLines(input, StandardCharsets.UTF_8);
         if (output.getParent() != null) {
@@ -55,11 +64,7 @@ public class CsvDeduplication {
                 }
             }
         }
-
-        System.out.printf("Read %d records, accepted %d, duplicates %d, invalid %d%n",
-                read, accepted, read - accepted, invalid);
-        System.out.println("Accepted records written to " + output);
-        pipeline.metrics().printSummary();
+        return new Result(read, accepted, invalid, pipeline.metrics());
     }
 
     static DataRecord parse(String line) {

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" font-family="sans-serif" font-size="12">
+<rect width="100%" height="100%" fill="white"/>
+<text x="450" y="30" font-size="16" text-anchor="middle">False-positive rate vs bit-array size (n = 90,000 inserted IDs)</text>
+<text x="410.0" y="535.0" text-anchor="middle">Bit-array size m (bits)</text>
+<text x="22" y="270.0" text-anchor="middle" transform="rotate(-90 22 270.0)">False-positive rate (%, log scale)</text>
+<line x1="90.0" y1="480.0" x2="730.0" y2="480.0" stroke="#dddddd" stroke-width="1.0"/>
+<text x="82.0" y="484.0" text-anchor="end">0.01</text>
+<line x1="90.0" y1="375.0" x2="730.0" y2="375.0" stroke="#dddddd" stroke-width="1.0"/>
+<text x="82.0" y="379.0" text-anchor="end">0.1</text>
+<line x1="90.0" y1="270.0" x2="730.0" y2="270.0" stroke="#dddddd" stroke-width="1.0"/>
+<text x="82.0" y="274.0" text-anchor="end">1</text>
+<line x1="90.0" y1="165.0" x2="730.0" y2="165.0" stroke="#dddddd" stroke-width="1.0"/>
+<text x="82.0" y="169.0" text-anchor="end">10</text>
+<line x1="90.0" y1="60.0" x2="730.0" y2="60.0" stroke="#dddddd" stroke-width="1.0"/>
+<text x="82.0" y="64.0" text-anchor="end">100</text>
+<line x1="119.1" y1="480.0" x2="119.1" y2="485.0" stroke="#333333" stroke-width="1.0"/>
+<text x="119.1" y="500.0" text-anchor="middle">200k</text>
+<line x1="202.2" y1="480.0" x2="202.2" y2="485.0" stroke="#333333" stroke-width="1.0"/>
+<text x="202.2" y="500.0" text-anchor="middle">400k</text>
+<line x1="285.3" y1="480.0" x2="285.3" y2="485.0" stroke="#333333" stroke-width="1.0"/>
+<text x="285.3" y="500.0" text-anchor="middle">600k</text>
+<line x1="394.5" y1="480.0" x2="394.5" y2="485.0" stroke="#333333" stroke-width="1.0"/>
+<text x="394.5" y="500.0" text-anchor="middle">863k</text>
+<line x1="534.7" y1="480.0" x2="534.7" y2="485.0" stroke="#333333" stroke-width="1.0"/>
+<text x="534.7" y="500.0" text-anchor="middle">1200k</text>
+<line x1="700.9" y1="480.0" x2="700.9" y2="485.0" stroke="#333333" stroke-width="1.0"/>
+<text x="700.9" y="500.0" text-anchor="middle">1600k</text>
+<line x1="90.0" y1="60.0" x2="90.0" y2="480.0" stroke="#333333" stroke-width="1.5"/>
+<line x1="90.0" y1="480.0" x2="730.0" y2="480.0" stroke="#333333" stroke-width="1.5"/>
+<line x1="394.5" y1="60.0" x2="394.5" y2="480.0" stroke="#888888" stroke-width="1.5" stroke-dasharray="5,4"/>
+<text x="399.5" y="74.0" text-anchor="start">lab choice: m = 862,700</text>
+<polyline fill="none" stroke="#1f77b4" stroke-width="2" points="119.1,101.1 202.2,157.4 285.3,198.9 394.5,239.8 534.7,279.2 700.9,314.8"/>
+<circle cx="119.1" cy="103.6" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="202.2" cy="161.3" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="285.3" cy="194.4" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="394.5" cy="218.7" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="534.7" cy="272.7" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="700.9" cy="319.6" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<line x1="745.0" y1="80.0" x2="775.0" y2="80.0" stroke="#1f77b4" stroke-width="2.0"/>
+<circle cx="760" cy="80.0" r="4" fill="#1f77b4"/>
+<text x="782.0" y="84.0" text-anchor="start">k = 3</text>
+<polyline fill="none" stroke="#ff7f0e" stroke-width="2" points="119.1,85.4 202.2,149.5 285.3,205.8 394.5,265.3 534.7,325.1 700.9,380.5"/>
+<circle cx="119.1" cy="85.1" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="202.2" cy="149.9" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="285.3" cy="202.7" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="394.5" cy="250.5" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="534.7" cy="322.1" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="700.9" cy="373.7" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<line x1="745.0" y1="102.0" x2="775.0" y2="102.0" stroke="#ff7f0e" stroke-width="2.0"/>
+<circle cx="760" cy="102.0" r="4" fill="#ff7f0e"/>
+<text x="782.0" y="106.0" text-anchor="start">k = 5</text>
+<polyline fill="none" stroke="#2ca02c" stroke-width="2" points="119.1,74.0 202.2,134.0 285.3,197.5 394.5,269.8 534.7,345.8 700.9,418.3"/>
+<circle cx="119.1" cy="73.6" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="202.2" cy="134.5" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="285.3" cy="195.8" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="394.5" cy="260.7" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="534.7" cy="337.4" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="700.9" cy="404.8" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<line x1="745.0" y1="124.0" x2="775.0" y2="124.0" stroke="#2ca02c" stroke-width="2.0"/>
+<circle cx="760" cy="124.0" r="4" fill="#2ca02c"/>
+<text x="782.0" y="128.0" text-anchor="start">k = 7</text>
+<polyline fill="none" stroke="#d62728" stroke-width="2" points="119.1,65.1 202.2,110.8 285.3,175.1 394.5,258.1 534.7,351.6 700.9,444.7"/>
+<circle cx="119.1" cy="65.1" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="202.2" cy="112.3" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="285.3" cy="175.5" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="394.5" cy="257.0" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="534.7" cy="351.1" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="700.9" cy="446.2" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<line x1="745.0" y1="146.0" x2="775.0" y2="146.0" stroke="#d62728" stroke-width="2.0"/>
+<circle cx="760" cy="146.0" r="4" fill="#d62728"/>
+<text x="782.0" y="150.0" text-anchor="start">k = 10</text>
+<text x="745.0" y="182.0" text-anchor="start">line = theory</text>
+<text x="745.0" y="200.0" text-anchor="start">dots = measured</text>
+</svg>
